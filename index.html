@@ -141,59 +141,153 @@
         .hidden {
             display: none;
         }
+
+        /* Success screen styles */
+        .success-screen {
+            text-align: center;
+            display: none;
+        }
+
+        .success-screen.show {
+            display: block;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #E84E3C;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        .success-icon svg {
+            width: 45px;
+            height: 45px;
+            stroke: white;
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+        }
+
+        @keyframes scaleIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .success-title {
+            color: #000000;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .success-message {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .back-button {
+            background: #000000;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 6px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        .back-button:hover {
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Reset Your Password</h1>
-        <p class="subtitle">Enter your new password below</p>
+        <!-- Reset Form -->
+        <div id="resetFormContainer">
+            <h1>Reset Your Password</h1>
+            <p class="subtitle">Enter your new password below</p>
 
-        <div id="message" class="message"></div>
+            <div id="message" class="message"></div>
 
-        <form id="resetForm">
-            <div class="form-group">
-                <label for="password">New Password</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    name="password" 
-                    required 
-                    minlength="6"
-                    placeholder="Enter new password"
-                >
-                <div class="password-requirements">
-                    Must be at least 6 characters long
+            <form id="resetForm">
+                <div class="form-group">
+                    <label for="password">New Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        required 
+                        minlength="6"
+                        placeholder="Enter new password"
+                    >
+                    <div class="password-requirements">
+                        Must be at least 6 characters long
+                    </div>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label for="confirmPassword">Confirm Password</label>
-                <input 
-                    type="password" 
-                    id="confirmPassword" 
-                    name="confirmPassword" 
-                    required 
-                    minlength="6"
-                    placeholder="Confirm new password"
-                >
-            </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input 
+                        type="password" 
+                        id="confirmPassword" 
+                        name="confirmPassword" 
+                        required 
+                        minlength="6"
+                        placeholder="Confirm new password"
+                    >
+                </div>
 
-            <button type="submit" id="submitBtn">
-                Reset Password
-            </button>
-        </form>
+                <button type="submit" id="submitBtn">
+                    Reset Password
+                </button>
+            </form>
+        </div>
+
+        <!-- Success Screen -->
+        <div id="successScreen" class="success-screen">
+            <div class="success-icon">
+                <svg viewBox="0 0 24 24">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
+            <h2 class="success-title">Password Changed!</h2>
+            <p class="success-message">
+                Your password has been successfully updated. You can now log in with your new password.
+            </p>
+            <a href="/" class="back-button">Back to Login</a>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // IMPORTANT: Replace these with your actual Supabase credentials
-          const SUPABASE_URL = 'https://xgfjbredcxetsjkocqpv.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhnZmpicmVkY3hldHNqa29jcXB2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQzOTUyMjAsImV4cCI6MjA2OTk3MTIyMH0.wpN4jWjmCp51fHJ5bCuAY0omhBcbS_4uryxDJqEvp8w';
+        const SUPABASE_URL = 'https://xgfjbredcxetsjkocqpv.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhnZmpicmVkY3hldHNqa29jcXB2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQzOTUyMjAsImV4cCI6MjA2OTk3MTIyMH0.wpN4jWjmCp51fHJ5bCuAY0omhBcbS_4uryxDJqEvp8w';
 
         const { createClient } = supabase;
         const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const form = document.getElementById('resetForm');
+        const resetFormContainer = document.getElementById('resetFormContainer');
+        const successScreen = document.getElementById('successScreen');
         const messageDiv = document.getElementById('message');
         const submitBtn = document.getElementById('submitBtn');
         const passwordInput = document.getElementById('password');
@@ -215,6 +309,11 @@
             } else {
                 submitBtn.innerHTML = 'Reset Password';
             }
+        }
+
+        function showSuccessScreen() {
+            resetFormContainer.classList.add('hidden');
+            successScreen.classList.add('show');
         }
 
         form.addEventListener('submit', async (e) => {
@@ -246,13 +345,8 @@
 
                 if (error) throw error;
 
-                showMessage('Password reset successfully! Redirecting...', 'success');
-                form.reset();
-                
-                // Redirect to your app's login page after 2 seconds
-                setTimeout(() => {
-                    window.location.href = '/'; // Change this to your login page URL
-                }, 2000);
+                // Show success screen
+                showSuccessScreen();
 
             } catch (error) {
                 showMessage(`Error: ${error.message}`, 'error');
